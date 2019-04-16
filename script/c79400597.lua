@@ -1,5 +1,5 @@
 -- 静冠の呪眼
---Watchful Rule of the Evil Eye 
+--Evil Eye Repose
 local s,id=GetID()
 function s.initial_effect(c)
 	--activate
@@ -45,13 +45,13 @@ function s.target(e,tp,eg,ep,ev,re,r,rp,chk)
 		e:SetOperation(nil)
 	end
 end
-function s.filter(c)
+function s.rmvfilter(c)
 	return c:IsSetCard(0x129) and c:IsAbleToRemoveAsCost()
 end
 function s.drcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_GRAVE,0,1,nil) end
+	if chk==0 then return Duel.IsExistingMatchingCard(s.rmvfilter,tp,LOCATION_GRAVE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,s.filter,tp,LOCATION_GRAVE,0,1,1,nil)
+	local g=Duel.SelectMatchingCard(tp,s.rmvfilter,tp,LOCATION_GRAVE,0,1,1,nil)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
 end
 function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -61,6 +61,7 @@ function s.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.SetOperationInfo(0,CATEGORY_DRAW,nil,0,tp,1)
 end
 function s.drop(e,tp,eg,ep,ev,re,r,rp)
+	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
 	Duel.Draw(p,d,REASON_EFFECT)
 end
@@ -83,7 +84,7 @@ function s.rmop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local bc=e:GetLabelObject()
 	if bc:IsRelateToBattle() and bc:IsControler(1-tp) then 
-		Duel.Remove(bc,0,REASON_EFFECT)		
+		Duel.Remove(bc,POS_FACEUP,REASON_EFFECT)		
 	end
 end
 function s.thcon(e,tp,eg,ep,ev,re,r,rp)

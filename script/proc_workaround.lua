@@ -12,6 +12,9 @@ function GetID()
     local s_id=tonumber(string.sub(str,2))
     return scard,s_id
 end
+function Card.IsNonEffectMonster(c)
+	return c:IsType(TYPE_MONSTER) and not c:IsType(TYPE_EFFECT)
+end
 
 local chkoverlay=Duel.CheckRemoveOverlayCard
 Duel.CheckRemoveOverlayCard=function(player, self, opponent, count, reason, group)
@@ -311,6 +314,12 @@ function Card.IsPreviousControler(c,tp)
 end
 function Card.IsHasLevel(c)
 	return c:GetLevel()>0
+end
+function Card.IsSummonLocation(c,loc)
+	return c:GetSummonLocation()&loc~=0
+end
+function Duel.GetTargetCards(e)
+	return Duel.GetChainInfo(0,CHAININFO_TARGET_CARDS):Filter(Card.IsRelateToEffect,nil,e)
 end
 
 --Checks whether the card is located at any of the sequences passed as arguments.
